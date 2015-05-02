@@ -17,18 +17,18 @@ class ContentNegotiation(object):
     def set_negotiated_content_type_header(self):
         self.set_header('Content-Type', self.negotiated_content_type())
     
-    def negotiated_content_type(self):
-        return self._negotiate_content_type()
+    def negotiated_content_type(self, **kwargs):
+        return self._negotiate_content_type(**kwargs)
     
     def negotiated_mime_type(self):
         parsed_mime_type = mimeparse.parse_mime_type(self._negotiate_content_type())
         return '%s/%s' % (parsed_mime_type[0], parsed_mime_type[1])
     
-    def _negotiate_content_type(self):
+    def _negotiate_content_type(self, finish_on_error=True):
         if not hasattr(self, '_negotiated_content_type'):
             accept = self.request.headers.get('Accept')
             self._negotiated_content_type = mimeparse.best_match(self._negotiable_server_content_types, accept)
-            if not self._negotiated_content_type:
+            if not self._negotiated_content_type and finish_on_error:
                 self.set_status(406)
                 if not self._finished:
                     self.finish()

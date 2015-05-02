@@ -42,6 +42,17 @@ Return best match mime type:
 self.negotiated_mime_type() # application/json
 ```
 
+### Error handling
+
+If there is an error in "Accept:" header or suitable content-type
+is missing, then self.negotiated_content_type() returns None.
+
+By default any error condition sets HTTP status 406 and calls
+self.finish(). 'finish_on_error=False' parameter can be used in
+self.negotiated_content_type() to skip this behaviour.
+
+Be aware, that this doesn't change the error handling in other methods!
+
 ## License
 
 Tornado Content Negotiation is licensed under the MIT License:
